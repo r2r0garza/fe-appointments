@@ -1,0 +1,42 @@
+# Execution plan — ADO 10: Submit and store a valid appointment request
+
+## Source and scope
+
+Work item 10 (User Story, Active), Appointments project. The story asks for a thin end-to-end slice: collect name, email, preferred date, and short note; submit to the backend; validate and persist valid requests; display an accepted result. Acceptance means received and stored, not scheduled or confirmed. The item has three comments: “Comment from North Star”, “Test comment 2”, and “Test comment”; none supplies additional acceptance constraints. This is a planning artifact only; do not update the tracker.
+
+## Current repository findings
+
+- Frontend is a React + TypeScript + Vite + Tailwind/shadcn UI scaffold, with starter app content and no form/API integration. `package.json` provides `pnpm typecheck`, `pnpm lint`, and `pnpm build`.
+- Backend is documentation-only; no framework, API, or persistence technology is selected.
+- Both frontend and backend are required for the requested end-to-end slice. The corresponding implementation details are also captured in `be-appointments/.plan/10`.
+
+## Assumptions to resolve during implementation
+
+1. Select a minimal backend framework and durable local persistence approach that can be set up and tested reproducibly; document choices and dependencies.
+2. Agree one JSON API contract and configurable backend base URL before integration; provide appropriate local CORS or dev-proxy configuration.
+3. Define explicit compatible client/server field constraints. Require a non-empty name, syntactically valid email, valid preferred date, and bounded short note. Enforce on the server; do not invent scheduling/business rules.
+4. Return accepted success only after persistence succeeds. Distinguish invalid input from server/storage failures.
+5. Confirmation states only that the request was received/accepted, never that it is booked, scheduled, or confirmed.
+
+## Frontend execution
+
+1. Inspect starter app and implement accessible, labeled controls for name, email, preferred date, and short note.
+2. Add client-side required/format validation while treating backend validation as authoritative; send the submitted values using the agreed API contract.
+3. Prevent duplicate submissions while pending and preserve entered values on failure for correction/retry.
+4. On a successful accepted response, display clear receipt language that does not imply a booking. On validation or service failure, show useful feedback and never show acceptance.
+5. Verify with `pnpm typecheck`, `pnpm lint`, and `pnpm build`, then exercise valid and invalid requests against the backend and confirm the displayed outcomes.
+
+## Acceptance checklist
+
+- [ ] Valid name, email, preferred date, and short note are sent to the backend.
+- [ ] Backend revalidates and stores a valid request.
+- [ ] Backend responds successfully only after storage succeeds.
+- [ ] Frontend clearly confirms accepted/received after backend success.
+- [ ] Confirmation does not state or imply booked, scheduled, or confirmed.
+- [ ] Invalid input is not stored; service/storage failure is not shown as acceptance.
+- [ ] Contract, configuration, persistence, and run/test instructions are documented.
+- [ ] Relevant automated checks and manual end-to-end cases pass.
+
+## Risks and dependencies
+
+The backend has no selected framework or persistence implementation. Frontend work depends on a jointly agreed route/schema and local connectivity configuration. Do not report full acceptance if the backend or durable persistence cannot be run and verified.
